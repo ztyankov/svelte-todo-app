@@ -1,0 +1,19 @@
+{
+    "tasks": [
+        {
+            "id": 1,
+            "title": "My first todo",
+            "completed": false
+        },
+        {
+            "id": 2,
+            "title": "My 2nd todo",
+            "completed": false
+        },
+        {
+            "id": 3,
+            "title": "My third todo",
+            "completed": false
+        }
+    ]
+}
