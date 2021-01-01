@@ -1,10 +1,16 @@
-<script>
+<script lang="ts">
     import TodoItem from "./TodoItem.svelte";
     import { onMount } from "svelte";
 
+    interface ITask {
+        id: number,
+        title: string,
+        completed: boolean
+    }
+
     let newTodoTitle = "";
     let currentFilter = "all";
-    let todos = [];
+    let todos: ITask[];
 
     onMount(async () => {
         const res = await fetch(`/data/tasks.json`);
@@ -12,7 +18,7 @@
         todos = data.tasks;
     });
 
-    function addTodo(event) {
+    function addTodo(event: KeyboardEvent) {
         if (event.key !== "Enter" || newTodoTitle === "") {
             return;
         }
@@ -36,7 +42,7 @@
         });
     }
 
-    function updateFilter(newFilter) {
+    function updateFilter(newFilter: string) {
         currentFilter = newFilter;
     }
 
@@ -68,15 +74,6 @@
 </script>
 
 <style>
-    .container {
-        max-width: 800px;
-        margin: 10px auto;
-    }
-    .logo {
-        display: block;
-        margin: 20px auto;
-        width: 50%;
-    }
     .todo-input {
         width: 100%;
         padding: 10px, 20px;
@@ -112,49 +109,42 @@
     }
 </style>
 
-<div class="container">
-    <a href="https://codingthesmartway.com" target="_blank"><img
-            src={'/assets/svelte-horizontal.png'}
-            alt="svelte logo"
-            class="logo" /></a>
-    <h2>Svelte Todo App</h2>
-    <input
-        type="text"
-        class="todo-input"
-        placeholder="Insert todo item ..."
-        bind:value={newTodoTitle}
-        on:keydown={addTodo} />
-    {#each filteredTodos as todo}
-        <div class="todo-item">
-            <TodoItem
-                {...todo}
-                on:deleteTodo={handleDeleteTodo}
-                on:toggleCompleted={handleToggleCompleted} />
-        </div>
-    {/each}
-    <div class="inner-container">
-        <div>
-            <label>
-                <input
-                    class="inner-container-input"
-                    type="checkbox"
-                    on:change={checkAllTodos} />
-                Check All</label>
-        </div>
-        <div>{todosRemaining} items left</div>
+<input
+    type="text"
+    class="todo-input"
+    placeholder="Insert todo item ..."
+    bind:value={newTodoTitle}
+    on:keydown={addTodo} />
+{#each filteredTodos as todo}
+    <div class="todo-item">
+        <TodoItem
+            {...todo}
+            on:deleteTodo={handleDeleteTodo}
+            on:toggleCompleted={handleToggleCompleted} />
     </div>
-    <div class="inner-container">
-        <div>
-            <button
-                on:click={() => updateFilter('all')}
-                class:active={currentFilter === 'all'}>All</button>
-            <button
-                on:click={() => updateFilter('active')}
-                class:active={currentFilter === 'active'}>Active</button>
-            <button
-                on:click={() => updateFilter('completed')}
-                class:active={currentFilter === 'completed'}>Completed</button>
-        </div>
-        <div><button on:click={clearCompleted}>Clear Completed</button></div>
+{/each}
+<div class="inner-container">
+    <div>
+        <label>
+            <input
+                class="inner-container-input"
+                type="checkbox"
+                on:change={checkAllTodos} />
+            Check All</label>
     </div>
+    <div>{todosRemaining} items left</div>
+</div>
+<div class="inner-container">
+    <div>
+        <button
+            on:click={() => updateFilter('all')}
+            class:active={currentFilter === 'all'}>All</button>
+        <button
+            on:click={() => updateFilter('active')}
+            class:active={currentFilter === 'active'}>Active</button>
+        <button
+            on:click={() => updateFilter('completed')}
+            class:active={currentFilter === 'completed'}>Completed</button>
+    </div>
+    <div><button on:click={clearCompleted}>Clear Completed</button></div>
 </div>
